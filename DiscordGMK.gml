@@ -1,5 +1,6 @@
 #define DiscordInit
-///(client_id)
+///(file_with_id_in_it)
+// in your game's directory should be a .txt file with written in it client id of your discord app
 
 var dllname
 {dllname="plugins\Discord\Discord.gmk.dll"}
@@ -16,7 +17,10 @@ global.dll_discord_setActivity 		= external_define(dllname, "setActivity"	, dll_
 global.dll_discord_setActivityType 	= external_define(dllname, "setActivityType", dll_cdecl, ty_real, 1,ty_real);
 global.dll_discord_clearActivity 	= external_define(dllname, "clearActivity"	, dll_cdecl, ty_real, 0);
 
-external_call(global.dll_discord_initialize,argument0)
+var f;f=file_text_open_read(argument0)
+var ret;ret=external_call(global.dll_discord_initialize,file_text_read_real(f))
+file_text_close(f)
+return ret;
 
 #define DiscordCallback
 ///()
