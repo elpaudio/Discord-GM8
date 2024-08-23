@@ -19,7 +19,6 @@ GMEXPORT double setActivity(char* name, char *state_text, char *large_text)
 	activity.SetState(state_text);
 	activity.GetAssets().SetLargeImage("home");
 	activity.GetAssets().SetLargeText(large_text);
-	activity.SetType(discord::ActivityType::Listening);
 	discord::ActivityTimestamps tmstp{};
 	tmstp.SetStart(time(NULL));
 	activity.GetTimestamps() = tmstp;
@@ -55,10 +54,10 @@ GMEXPORT double callback()
 	}
 }
 
-GMEXPORT double initialize()
+GMEXPORT double initialize(double client_id)
 {
 	discord::Core* core{};
-	discord::Core::Create(1275938097200238725, DiscordCreateFlags_NoRequireDiscord, &core);
+	discord::Core::Create((discord::ClientId)(int)client_id, DiscordCreateFlags_NoRequireDiscord, &core);
 
 	state.core.reset(core);
 
