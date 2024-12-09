@@ -12,28 +12,20 @@ struct DiscordState {
 
 DiscordState state{};
 
-GMEXPORT double setActivity(char* name, char *state_text, char *large_text)
-{
+GMEXPORT double setActivityEverything(char *name, char *state_text, char *large_text) {
 	discord::Activity activity{};
-	activity.SetDetails(name);
+	
 	activity.SetState(state_text);
-	activity.GetAssets().SetLargeImage("home");
 	activity.GetAssets().SetLargeText(large_text);
+	activity.SetDetails(name);
+	activity.SetType(discord::ActivityType::Listening);
+
 	discord::ActivityTimestamps tmstp{};
 	tmstp.SetStart(time(NULL));
 	activity.GetTimestamps() = tmstp;
+	activity.GetAssets().SetLargeImage("home");
 
-	state.core->ActivityManager().UpdateActivity(activity, [](discord::Result result) {});
-
-	return 1;
-}
-
-GMEXPORT double setActivityType(double type) {
-	discord::Activity activity{};
-	activity.SetType((discord::ActivityType)(int)type);
-
-	state.core->ActivityManager().UpdateActivity(activity, [](discord::Result result) {});
-
+	state.core->ActivityManager().UpdateActivity(activity, [](discord::Result result) {}); //update activity
 	return 1;
 }
 
@@ -54,10 +46,11 @@ GMEXPORT double callback()
 	}
 }
 
-GMEXPORT double initialize(double client_id)
+GMEXPORT double initialize()
 {
 	discord::Core* core{};
-	discord::Core::Create((discord::ClientId)(int)client_id, DiscordCreateFlags_NoRequireDiscord, &core);
+	/* Hello fellow source code watcher, put your bot id instead of 1275938097200238725. */
+	discord::Core::Create(1275938097200238725, DiscordCreateFlags_NoRequireDiscord, &core);
 
 	state.core.reset(core);
 
