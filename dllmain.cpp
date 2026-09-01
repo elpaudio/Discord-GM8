@@ -2,6 +2,7 @@
 #include <csignal>
 #include <thread>
 #include <chrono>
+#include <string>
 #include "discord.h"
 
 #define GMEXPORT extern "C" _declspec(dllexport)
@@ -12,7 +13,7 @@ struct DiscordState {
 
 DiscordState state{};
 
-GMEXPORT double setActivityEverything(char *name, char *state_text, char *large_text) {
+GMEXPORT double setActivityEverything(const char *name, const char *state_text, const char *large_text) {
 	discord::Activity activity{};
 	
 	activity.SetState(state_text);
@@ -46,11 +47,12 @@ GMEXPORT double callback()
 	}
 }
 
-GMEXPORT double initialize()
+GMEXPORT double initialize(const char *app_id)
 {
 	discord::Core* core{};
-	/* Hello fellow source code watcher, put your bot id instead of 1275938097200238725. */
-	discord::Core::Create(1275938097200238725, DiscordCreateFlags_NoRequireDiscord, &core);
+	/* Hello fellow source code watcher, no need to put your bot id instead of 1275938097200238725. now it's automatic. */
+	std::string my_id = app_id;
+	discord::Core::Create(std::stoull(my_id), DiscordCreateFlags_NoRequireDiscord, &core);
 
 	state.core.reset(core);
 
