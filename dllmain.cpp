@@ -13,20 +13,26 @@ struct DiscordState {
 
 DiscordState state{};
 
+discord::Activity myActivity{};
+
 GMEXPORT double setActivityEverything(const char *name, const char *state_text, const char *large_text) {
-	discord::Activity activity{};
 	
-	activity.SetState(state_text);
-	activity.GetAssets().SetLargeText(large_text);
-	activity.SetDetails(name);
-	activity.SetType(discord::ActivityType::Listening);
+	myActivity.SetState(state_text);
+	myActivity.GetAssets().SetLargeText(large_text);
+	myActivity.SetDetails(name);
 
 	discord::ActivityTimestamps tmstp{};
 	tmstp.SetStart(time(NULL));
-	activity.GetTimestamps() = tmstp;
-	activity.GetAssets().SetLargeImage("home");
+	myActivity.GetTimestamps() = tmstp;
+	myActivity.GetAssets().SetLargeImage("home");
 
-	state.core->ActivityManager().UpdateActivity(activity, [](discord::Result result) {}); //update activity
+	state.core->ActivityManager().UpdateActivity(myActivity, [](discord::Result result) {}); //update activity
+	return 1;
+}
+
+GMEXPORT double setActivityType(double type) {
+	myActivity.SetType((int)type);
+	state.core->ActivityManager().UpdateActivity(myActivity, [](discord::Result result) {}); //update activity
 	return 1;
 }
 
